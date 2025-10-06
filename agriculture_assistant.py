@@ -23,46 +23,44 @@ class AgricultureAssistant:
             from openai import OpenAI
             client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
             
-            system_prompt = """You are an expert agricultural advisor specializing in Philippine farming. You can answer ANY agriculture-related question comprehensively.
+            system_prompt = """You are Agri-AI, an expert agricultural advisor and conversational AI assistant specializing in Philippine farming. You have deep knowledge of agriculture and can engage in natural, helpful conversations about farming topics.
 
-You can help with:
-- Crop Production and Plant Cultivation
-- Livestock and Animal Husbandry
-- Poultry and Aquaculture Farming
-- Crop Disease Detection and Diagnosis
-- Animal Health and Veterinary Care
-- Weather Forecasting and Yield Prediction
-- Soil Quality Analysis and Testing
-- Smart Irrigation Systems and Water Management
-- Pest Detection and Identification
-- Plant Breeding and Genetics
-- Animal Breeding and Reproduction
-- Precision Agriculture and IoT Sensors
-- Drone Technology for Farming
-- Agricultural Data Analytics
-- Climate-Smart Agriculture
-- Automated Farming Systems
-- Plant Health Monitoring
-- Nutrient Management Systems
-- Feed Formulation and Animal Nutrition
-- Agricultural AI and Machine Learning
-- Remote Sensing for Agriculture
-- Farm Management Software
-- Crop Monitoring Technologies
-- Agricultural Robotics
-- Sustainable Farming Practices
-- Digital Agriculture Solutions
-- Agricultural Innovation and Research
+Your personality:
+- Friendly, knowledgeable, and approachable like ChatGPT
+- Patient and understanding with farmers of all experience levels
+- Enthusiastic about helping improve Philippine agriculture
+- Use conversational tone while maintaining expertise
+- Acknowledge when you don't know something and suggest alternatives
 
-RESPONSE STYLE:
-- Provide comprehensive, detailed answers
-- Use Filipino farming terminology when appropriate
-- Include practical, actionable advice
-- Mention Philippine-specific information when relevant
-- Use clear formatting with bullet points and sections
-- Be engaging and educational
+Your expertise covers:
+- All aspects of crop production (rice, corn, vegetables, fruits, etc.)
+- Livestock and poultry farming (cattle, pigs, chickens, goats, carabao)
+- Modern agricultural technology (IoT, precision farming, drones)
+- Traditional Filipino farming methods and local knowledge
+- Plant diseases, pests, and integrated management
+- Soil health, fertilization, and sustainable practices
+- Weather patterns, climate adaptation, and yield optimization
+- Agricultural business, marketing, and economics
+- Government programs (DA, ATI, LGU support)
+- Post-harvest processing and value-adding
 
-Answer any agriculture-related question thoroughly and professionally."""
+Conversation guidelines:
+- Always stay focused on agriculture-related topics
+- If asked about non-agricultural topics, politely redirect to farming
+- Use Filipino terms when appropriate (palay, mais, saging, etc.)
+- Provide practical, actionable advice tailored to Philippine conditions
+- Ask clarifying questions when needed to give better advice
+- Use emojis and formatting to make responses engaging
+- Reference specific Philippine locations, varieties, and practices
+- Suggest local resources and contacts when helpful
+
+Example responses:
+- Be conversational: "That's a great question about rice farming!"
+- Show understanding: "I understand you're dealing with pest issues..."
+- Provide context: "In the Philippines, this is especially important because..."
+- Offer alternatives: "If that doesn't work, you could also try..."
+
+Remember: You're here to help Filipino farmers succeed through friendly, expert agricultural guidance."""
 
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -70,8 +68,8 @@ Answer any agriculture-related question thoroughly and professionally."""
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.7,
-                max_tokens=1000
+                temperature=0.8,
+                max_tokens=1500
             )
             return response.choices[0].message.content
         except Exception as e:
@@ -79,12 +77,26 @@ Answer any agriculture-related question thoroughly and professionally."""
             return self._get_fallback_response(prompt)
     
     def _get_fallback_response(self, prompt: str) -> str:
-        """Enhanced fallback response with smart agriculture knowledge"""
+        """Enhanced conversational fallback response"""
+        prompt_lower = prompt.lower()
+        
+        # Check for non-agricultural topics and redirect
+        non_agri_keywords = ['weather today', 'news', 'politics', 'sports', 'entertainment', 'cooking', 'recipe']
+        if any(keyword in prompt_lower for keyword in non_agri_keywords):
+            return ("I appreciate your question, but I'm specifically designed to help with agricultural topics! \n\n"
+                   "I'd love to help you with farming questions instead. For example:\n"
+                   "- How to improve crop yields\n"
+                   "- Livestock care and management\n"
+                   "- Pest and disease control\n"
+                   "- Modern farming techniques\n\n"
+                   "What farming challenge can I help you with today? 🌾")
+        
         prompt_lower = prompt.lower()
         
         # Animals/Livestock
         if any(word in prompt_lower for word in ['animal', 'livestock', 'cattle', 'pig', 'chicken', 'goat', 'carabao']):
-            return ("🐄 **LIVESTOCK & ANIMAL FARMING**\n\n"
+            return ("Great question about livestock farming! 🐄 Let me help you with animal agriculture in the Philippines.\n\n"
+                   "**LIVESTOCK & ANIMAL FARMING**\n\n"
                    "**Common Philippine Livestock:**\n"
                    "- **Cattle**: Dairy and beef production\n"
                    "- **Pigs**: Backyard and commercial swine\n"
@@ -237,10 +249,12 @@ Answer any agriculture-related question thoroughly and professionally."""
                    "Visit your nearest ATI center for training programs.")
         
         else:
-            return ("I can help you with agriculture questions! Ask me about:\n\n"
-                   "🌾 **Crops**: Rice, corn, vegetables, fruits\n"
-                   "🐄 **Animals**: Livestock, poultry, animal health\n"
-                   "🌱 **Plants**: Cultivation, care, growth stages\n"
-                   "🔬 **Technology**: Disease detection, smart farming\n"
-                   "💧 **Systems**: Irrigation, soil analysis, precision agriculture\n\n"
-                   "What would you like to know about farming?")
+            return ("Hello! I'm your agriculture assistant, and I'm here to help with any farming questions you have! \n\n"
+                   "I can assist you with:\n\n"
+                   "🌾 **Crop Farming**: Rice, corn, vegetables, fruits, and more\n"
+                   "🐄 **Livestock**: Cattle, pigs, chickens, goats, carabao care\n"
+                   "🌱 **Plant Care**: From seed to harvest guidance\n"
+                   "🔬 **Smart Farming**: Modern technology and techniques\n"
+                   "💧 **Farm Systems**: Irrigation, soil health, pest management\n"
+                   "💼 **Agri-Business**: Marketing, economics, and planning\n\n"
+                   "Feel free to ask me anything about farming - I'm here to help you succeed! What's on your mind today?")
