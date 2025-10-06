@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agri-AI - Agriculture Assistant for Philippines</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .nav-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #27ae60, #229954);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #27ae60;
+        }
+        
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; margin-top: 80px; }
+        .header { 
+            text-align: center; 
+            color: white; 
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+        }
+        .header h1 { 
+            font-size: 3em; 
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .header p { 
+            font-size: 1.3em; 
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        .form-container { 
+            background: white; 
+            border-radius: 25px; 
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #27ae60, #229954, #1e8449);
+            border-radius: 25px 25px 0 0;
+        }
+        .form-group { 
+            margin-bottom: 25px;
+            position: relative;
+        }
+        label { 
+            display: block; 
+            margin-bottom: 10px; 
+            font-weight: 600; 
+            color: #2c3e50;
+            font-size: 1.05rem;
+            letter-spacing: 0.3px;
+        }
+        select, input { 
+            width: 100%; 
+            padding: 14px 18px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 12px; 
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            font-family: inherit;
+        }
+        select:focus, input:focus { 
+            outline: none; 
+            border-color: #27ae60;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+            transform: translateY(-2px);
+        }
+        select:hover, input:hover {
+            border-color: #27ae60;
+        }
+        .btn { 
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white; 
+            padding: 18px 30px; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 18px; 
+            font-weight: 600;
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+            letter-spacing: 0.5px;
+        }
+        .btn:hover { 
+            background: linear-gradient(135deg, #229954, #1e8449);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(39, 174, 96, 0.4);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #2980b9, #21618c);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        .error-message {
+            background: #fee;
+            border: 2px solid #e74c3c;
+            color: #c0392b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        .result { 
+            margin-top: 30px; 
+            padding: 30px; 
+            background: white;
+            border-radius: 15px; 
+            border: 2px solid #27ae60;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .result-header h3 {
+            color: #27ae60;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .result-content {
+            line-height: 1.8;
+            color: #2c3e50;
+        }
+        
+        .result-content h4 {
+            color: #27ae60;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .result-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .result-content li {
+            margin-bottom: 8px;
+        }
+        .loading { 
+            text-align: center; 
+            color: #27ae60;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e9ecef;
+            border-top: 4px solid #27ae60;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-container {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .loading-text {
+            margin-top: 15px;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+        .emoji { font-size: 1.5em; margin-right: 10px; }
+        
+        @media print {
+            .nav-header, .btn, .action-buttons, .header { display: none; }
+            .result { border: none; box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="nav-header">
+        <nav class="nav-container">
+            <a href="/" class="logo">🌾 Agri-AI</a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/app">Get Advice</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🌾 Agri-AI</h1>
+            <p>Your Personal Agriculture Assistant for the Philippines</p>
+        </div>
+        
+        <div class="form-container">
+            <form id="farmingForm">
+                <div class="form-group">
+                    <label for="crop">🌱 Type of Crop:</label>
+                    <select id="crop" name="crop" required>
+                        <option value="">Select your crop</option>
+                        <option value="Rice">Rice</option>
+                        <option value="Corn">Corn</option>
+                        <option value="Banana">Banana</option>
+                        <option value="Coconut">Coconut</option>
+                        <option value="Sugarcane">Sugarcane</option>
+                        <option value="Vegetables">Vegetables</option>
+                        <option value="Fruits">Fruits</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="region">🏝️ Region:</label>
+                    <select id="region" name="region" required>
+                        <option value="">Select your region</option>
+                        <option value="NCR">National Capital Region (NCR)</option>
+                        <option value="CAR">Cordillera Administrative Region (CAR)</option>
+                        <option value="Region I">Region I - Ilocos Region</option>
+                        <option value="Region II">Region II - Cagayan Valley</option>
+                        <option value="Region III">Region III - Central Luzon</option>
+                        <option value="Region IV-A">Region IV-A - CALABARZON</option>
+                        <option value="Region IV-B">Region IV-B - MIMAROPA</option>
+                        <option value="Region V">Region V - Bicol Region</option>
+                        <option value="Region VI">Region VI - Western Visayas</option>
+                        <option value="Region VII">Region VII - Central Visayas</option>
+                        <option value="Region VIII">Region VIII - Eastern Visayas</option>
+                        <option value="Region IX">Region IX - Zamboanga Peninsula</option>
+                        <option value="Region X">Region X - Northern Mindanao</option>
+                        <option value="Region XI">Region XI - Davao Region</option>
+                        <option value="Region XII">Region XII - SOCCSKSARGEN</option>
+                        <option value="Region XIII">Region XIII - Caraga</option>
+                        <option value="BARMM">BARMM - Bangsamoro</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="province">📍 Province:</label>
+                    <select id="province" name="province" required>
+                        <option value="">Select your province</option>
+                        <option value="Abra">Abra</option>
+                        <option value="Agusan del Norte">Agusan del Norte</option>
+                        <option value="Agusan del Sur">Agusan del Sur</option>
+                        <option value="Aklan">Aklan</option>
+                        <option value="Albay">Albay</option>
+                        <option value="Antique">Antique</option>
+                        <option value="Bataan">Bataan</option>
+                        <option value="Batanes">Batanes</option>
+                        <option value="Batangas">Batangas</option>
+                        <option value="Benguet">Benguet</option>
+                        <option value="Bohol">Bohol</option>
+                        <option value="Bukidnon">Bukidnon</option>
+                        <option value="Bulacan">Bulacan</option>
+                        <option value="Cagayan">Cagayan</option>
+                        <option value="Camarines Norte">Camarines Norte</option>
+                        <option value="Camarines Sur">Camarines Sur</option>
+                        <option value="Camiguin">Camiguin</option>
+                        <option value="Capiz">Capiz</option>
+                        <option value="Catanduanes">Catanduanes</option>
+                        <option value="Cavite">Cavite</option>
+                        <option value="Cebu">Cebu</option>
+                        <option value="Davao del Norte">Davao del Norte</option>
+                        <option value="Davao del Sur">Davao del Sur</option>
+                        <option value="Davao Oriental">Davao Oriental</option>
+                        <option value="Eastern Samar">Eastern Samar</option>
+                        <option value="Ilocos Norte">Ilocos Norte</option>
+                        <option value="Ilocos Sur">Ilocos Sur</option>
+                        <option value="Iloilo">Iloilo</option>
+                        <option value="Isabela">Isabela</option>
+                        <option value="Laguna">Laguna</option>
+                        <option value="Lanao del Norte">Lanao del Norte</option>
+                        <option value="Lanao del Sur">Lanao del Sur</option>
+                        <option value="La Union">La Union</option>
+                        <option value="Leyte">Leyte</option>
+                        <option value="Marinduque">Marinduque</option>
+                        <option value="Masbate">Masbate</option>
+                        <option value="Misamis Occidental">Misamis Occidental</option>
+                        <option value="Misamis Oriental">Misamis Oriental</option>
+                        <option value="Negros Occidental">Negros Occidental</option>
+                        <option value="Negros Oriental">Negros Oriental</option>
+                        <option value="Northern Samar">Northern Samar</option>
+                        <option value="Nueva Ecija">Nueva Ecija</option>
+                        <option value="Nueva Vizcaya">Nueva Vizcaya</option>
+                        <option value="Palawan">Palawan</option>
+                        <option value="Pampanga">Pampanga</option>
+                        <option value="Pangasinan">Pangasinan</option>
+                        <option value="Quezon">Quezon</option>
+                        <option value="Rizal">Rizal</option>
+                        <option value="Samar">Samar</option>
+                        <option value="South Cotabato">South Cotabato</option>
+                        <option value="Southern Leyte">Southern Leyte</option>
+                        <option value="Sulu">Sulu</option>
+                        <option value="Surigao del Norte">Surigao del Norte</option>
+                        <option value="Surigao del Sur">Surigao del Sur</option>
+                        <option value="Tarlac">Tarlac</option>
+                        <option value="Zambales">Zambales</option>
+                        <option value="Zamboanga del Norte">Zamboanga del Norte</option>
+                        <option value="Zamboanga del Sur">Zamboanga del Sur</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="climate">🌤️ Climate Conditions:</label>
+                    <select id="climate" name="climate" required>
+                        <option value="">Select climate</option>
+                        <option value="Dry season">Dry Season</option>
+                        <option value="Wet season">Wet Season</option>
+                        <option value="Monsoon">Monsoon</option>
+                        <option value="Year-round">Year-round</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="soil_type">🌍 Soil Type:</label>
+                    <select id="soil_type" name="soil_type" required>
+                        <option value="">Select soil type</option>
+                        <option value="Sandy loam">Sandy Loam</option>
+                        <option value="Clay">Clay</option>
+                        <option value="Loamy">Loamy</option>
+                        <option value="Sandy">Sandy</option>
+                        <option value="Silt">Silt</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="main_concern">🎯 Main Concern:</label>
+                    <select id="main_concern" name="main_concern" required>
+                        <option value="">Select your main concern</option>
+                        <option value="Water Management">Water Management</option>
+                        <option value="Pest Control">Pest Control</option>
+                        <option value="Disease Control">Disease Control</option>
+                        <option value="Soil Health">Soil Health</option>
+                        <option value="Yield Improvement">Yield Improvement</option>
+                        <option value="Weather Planning">Weather Planning</option>
+                        <option value="General Advice">General Advice</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn" id="submitBtn">
+                    <span id="btnText">🌾 Get Agriculture Advice</span>
+                </button>
+            </form>
+            
+            <div id="result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('farmingForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const resultDiv = document.getElementById('result');
+        
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            btnText.innerHTML = '🔄 Processing...';
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Combine region and province into location
+            data.location = `${data.region}, ${data.province}`;
+            delete data.region;
+            delete data.province;
+            
+            // Show loading animation
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                    <div class="loading">🤖 AI is analyzing your farm conditions...</div>
+                    <div class="loading-text">This may take a few moments</div>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/get_advice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Format the advice with better structure
+                    const formattedAdvice = formatAdvice(result.advice);
+                    resultDiv.innerHTML = `
+                        <div class="result-header">
+                            <span style="font-size: 2rem;">✅</span>
+                            <h3>Your Personalized Agriculture Advice</h3>
+                        </div>
+                        <div class="result-content">${formattedAdvice}</div>
+                        <div class="action-buttons">
+                            <button class="btn-secondary" onclick="copyToClipboard()">📋 Copy Advice</button>
+                            <button class="btn-secondary" onclick="printAdvice()">🖨️ Print</button>
+                            <button class="btn-secondary" onclick="newQuery()">🔄 New Query</button>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error-message">
+                            <strong>❌ Error:</strong> ${result.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error-message">
+                        <strong>❌ Connection Error:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                btnText.innerHTML = '🌾 Get Agriculture Advice';
+            }
+        });
+        
+        function formatAdvice(advice) {
+            // Convert plain text to formatted HTML
+            let formatted = advice
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>');
+            
+            // Wrap in paragraph if not already
+            if (!formatted.startsWith('<')) {
+                formatted = '<p>' + formatted + '</p>';
+            }
+            
+            return formatted;
+        }
+        
+        function copyToClipboard() {
+            const content = document.querySelector('.result-content').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('✅ Advice copied to clipboard!');
+            });
+        }
+        
+        function printAdvice() {
+            window.print();
+        }
+        
+        function newQuery() {
+            resultDiv.style.display = 'none';
+            form.reset();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
