@@ -4,315 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agri-AI - Agriculture Assistant for Philippines</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#27ae60',
+                        secondary: '#229954',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
-            min-height: 100vh;
-        }
-        
-        /* Header */
-        .nav-header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #27ae60, #229954);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-decoration: none;
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: #2c3e50;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: #27ae60;
-        }
-        
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; margin-top: 80px; }
-        .header { 
-            text-align: center; 
-            color: white; 
-            margin-bottom: 40px;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-        }
-        .header h1 { 
-            font-size: 3em; 
-            margin-bottom: 15px;
-            font-weight: 700;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-        }
-        .header p { 
-            font-size: 1.3em; 
-            opacity: 0.95;
-            font-weight: 300;
-        }
-        .form-container { 
-            background: white; 
-            border-radius: 25px; 
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .form-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #27ae60, #229954, #1e8449);
-            border-radius: 25px 25px 0 0;
-        }
-        .form-group { 
-            margin-bottom: 25px;
-            position: relative;
-        }
-        label { 
-            display: block; 
-            margin-bottom: 10px; 
-            font-weight: 600; 
-            color: #2c3e50;
-            font-size: 1.05rem;
-            letter-spacing: 0.3px;
-        }
-        select, input { 
-            width: 100%; 
-            padding: 14px 18px; 
-            border: 2px solid #e0e0e0; 
-            border-radius: 12px; 
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-            font-family: inherit;
-        }
-        select:focus, input:focus { 
-            outline: none; 
-            border-color: #27ae60;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
-            transform: translateY(-2px);
-        }
-        select:hover, input:hover {
-            border-color: #27ae60;
-        }
-        .btn { 
-            background: linear-gradient(135deg, #27ae60, #229954);
-            color: white; 
-            padding: 18px 30px; 
-            border: none; 
-            border-radius: 12px; 
-            font-size: 18px; 
-            font-weight: 600;
-            cursor: pointer; 
-            width: 100%; 
-            margin-top: 30px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
-            letter-spacing: 0.5px;
-        }
-        .btn:hover { 
-            background: linear-gradient(135deg, #229954, #1e8449);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(39, 174, 96, 0.4);
-        }
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .btn:disabled {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-        }
-        
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, #2980b9, #21618c);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-        }
-        
-        .error-message {
-            background: #fee;
-            border: 2px solid #e74c3c;
-            color: #c0392b;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-        }
-        .result { 
-            margin-top: 30px; 
-            padding: 30px; 
-            background: white;
-            border-radius: 15px; 
-            border: 2px solid #27ae60;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            animation: slideIn 0.5s ease-out;
-        }
-        
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .result-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .result-header h3 {
-            color: #27ae60;
-            font-size: 1.5rem;
-            margin: 0;
-        }
-        
-        .result-content {
-            line-height: 1.8;
-            color: #2c3e50;
-        }
-        
-        .result-content h4 {
-            color: #27ae60;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-        
-        .result-content ul {
-            margin-left: 20px;
-            margin-bottom: 15px;
-        }
-        
-        .result-content li {
-            margin-bottom: 8px;
-        }
-        .loading { 
-            text-align: center; 
-            color: #27ae60;
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-        
-        .spinner {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            border: 4px solid #e9ecef;
-            border-top: 4px solid #27ae60;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
-        .loading-container {
-            padding: 40px;
-            text-align: center;
+        .gradient-text {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
-        .loading-text {
-            margin-top: 15px;
-            color: #7f8c8d;
-            font-size: 0.95rem;
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #27ae60;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
         }
-        .emoji { font-size: 1.5em; margin-right: 10px; }
-        
         @media print {
-            .nav-header, .btn, .action-buttons, .header { display: none; }
-            .result { border: none; box-shadow: none; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
-<body>
-    <header class="nav-header">
-        <nav class="nav-container">
-            <a href="/" class="logo">🌾 Agri-AI</a>
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/app">Get Advice</a></li>
+<body class="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 min-h-screen">
+    <!-- Header -->
+    <header class="no-print fixed top-0 w-full bg-white/95 backdrop-blur-lg shadow-lg z-50">
+        <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-3xl font-bold gradient-text">🌾 Agri-AI</a>
+            <ul class="flex gap-8">
+                <li><a href="/" class="text-gray-700 hover:text-primary font-medium transition">Home</a></li>
+                <li><a href="/app" class="text-primary font-semibold">Get Advice</a></li>
             </ul>
         </nav>
     </header>
     
-    <div class="container">
-        <div class="header">
-            <h1>🌾 Agri-AI</h1>
-            <p>Your Personal Agriculture Assistant for the Philippines</p>
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-6 py-24 mt-16">
+        <!-- Hero Header -->
+        <div class="text-center text-white mb-12 bg-white/10 backdrop-blur-md rounded-3xl p-10 shadow-2xl no-print">
+            <h1 class="text-5xl font-bold mb-4 drop-shadow-lg">🌾 Agri-AI</h1>
+            <p class="text-xl opacity-95">Your Personal Agriculture Assistant for the Philippines</p>
         </div>
         
-        <div class="form-container">
-            <form id="farmingForm">
-                <div class="form-group">
-                    <label for="crop">🌱 Type of Crop:</label>
-                    <select id="crop" name="crop" required>
+        <!-- Form Container -->
+        <div class="bg-white rounded-3xl shadow-2xl p-10 relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-primary via-secondary to-green-700"></div>
+            
+            <form id="farmingForm" class="space-y-6">
+                <div>
+                    <label for="crop" class="block text-gray-700 font-semibold mb-3 text-lg">🌱 Type of Crop:</label>
+                    <select id="crop" name="crop" required class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all duration-300 hover:border-primary text-base">
                         <option value="">Select your crop</option>
                         <option value="Rice">Rice</option>
                         <option value="Corn">Corn</option>
@@ -325,9 +85,9 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="region">🏝️ Region:</label>
-                    <select id="region" name="region" required>
+                <div>
+                    <label for="region" class="block text-gray-700 font-semibold mb-3 text-lg">🏝️ Region:</label>
+                    <select id="region" name="region" required class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all duration-300 hover:border-primary text-base">
                         <option value="">Select your region</option>
                         <option value="NCR">National Capital Region (NCR)</option>
                         <option value="CAR">Cordillera Administrative Region (CAR)</option>
@@ -349,9 +109,9 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="province">📍 Province:</label>
-                    <select id="province" name="province" required>
+                <div>
+                    <label for="province" class="block text-gray-700 font-semibold mb-3 text-lg">📍 Province:</label>
+                    <select id="province" name="province" required class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all duration-300 hover:border-primary text-base">
                         <option value="">Select your province</option>
                         <option value="Abra">Abra</option>
                         <option value="Agusan del Norte">Agusan del Norte</option>
@@ -414,9 +174,9 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="climate">🌤️ Climate Conditions:</label>
-                    <select id="climate" name="climate" required>
+                <div>
+                    <label for="climate" class="block text-gray-700 font-semibold mb-3 text-lg">🌤️ Climate Conditions:</label>
+                    <select id="climate" name="climate" required class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all duration-300 hover:border-primary text-base">
                         <option value="">Select climate</option>
                         <option value="Dry season">Dry Season</option>
                         <option value="Wet season">Wet Season</option>
@@ -425,9 +185,9 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="soil_type">🌍 Soil Type:</label>
-                    <select id="soil_type" name="soil_type" required>
+                <div>
+                    <label for="soil_type" class="block text-gray-700 font-semibold mb-3 text-lg">🌍 Soil Type:</label>
+                    <select id="soil_type" name="soil_type" required class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all duration-300 hover:border-primary text-base">
                         <option value="">Select soil type</option>
                         <option value="Sandy loam">Sandy Loam</option>
                         <option value="Clay">Clay</option>
@@ -437,9 +197,9 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="main_concern">🎯 Main Concern:</label>
-                    <select id="main_concern" name="main_concern" required>
+                <div>
+                    <label for="main_concern" class="block text-gray-700 font-semibold mb-3 text-lg">🎯 Main Concern:</label>
+                    <select id="main_concern" name="main_concern" required class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all duration-300 hover:border-primary text-base">
                         <option value="">Select your main concern</option>
                         <option value="Water Management">Water Management</option>
                         <option value="Pest Control">Pest Control</option>
@@ -451,12 +211,12 @@
                     </select>
                 </div>
                 
-                <button type="submit" class="btn" id="submitBtn">
+                <button type="submit" id="submitBtn" class="no-print w-full bg-gradient-to-r from-primary to-secondary text-white font-bold py-5 px-8 rounded-xl text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                     <span id="btnText">🌾 Get Agriculture Advice</span>
                 </button>
             </form>
             
-            <div id="result" class="result" style="display: none;"></div>
+            <div id="result" style="display: none;" class="mt-8"></div>
         </div>
     </div>
 
@@ -468,96 +228,81 @@
         
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Disable button and show loading state
             submitBtn.disabled = true;
             btnText.innerHTML = '🔄 Processing...';
             
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
-            
-            // Combine region and province into location
             data.location = `${data.region}, ${data.province}`;
             delete data.region;
             delete data.province;
             
-            // Show loading animation
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = `
-                <div class="loading-container">
+                <div class="text-center py-12">
                     <div class="spinner"></div>
-                    <div class="loading">🤖 AI is analyzing your farm conditions...</div>
-                    <div class="loading-text">This may take a few moments</div>
+                    <div class="text-primary text-xl font-semibold mt-6">🤖 AI is analyzing your farm conditions...</div>
+                    <div class="text-gray-500 mt-2">This may take a few moments</div>
                 </div>
             `;
             
             try {
                 const response = await fetch('/get_advice', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
                 
                 const result = await response.json();
                 
                 if (result.success) {
-                    // Format the advice with better structure
                     const formattedAdvice = formatAdvice(result.advice);
                     resultDiv.innerHTML = `
-                        <div class="result-header">
-                            <span style="font-size: 2rem;">✅</span>
-                            <h3>Your Personalized Agriculture Advice</h3>
-                        </div>
-                        <div class="result-content">${formattedAdvice}</div>
-                        <div class="action-buttons">
-                            <button class="btn-secondary" onclick="copyToClipboard()">📋 Copy Advice</button>
-                            <button class="btn-secondary" onclick="printAdvice()">🖨️ Print</button>
-                            <button class="btn-secondary" onclick="newQuery()">🔄 New Query</button>
+                        <div class="bg-white border-2 border-primary rounded-2xl p-8 shadow-xl">
+                            <div class="flex items-center gap-3 pb-6 border-b-2 border-gray-100">
+                                <span class="text-4xl">✅</span>
+                                <h3 class="text-2xl font-bold text-primary">Your Personalized Agriculture Advice</h3>
+                            </div>
+                            <div class="mt-6 text-gray-700 leading-relaxed">${formattedAdvice}</div>
+                            <div class="flex gap-3 mt-8 no-print flex-wrap">
+                                <button onclick="copyToClipboard()" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl transition">📋 Copy</button>
+                                <button onclick="printAdvice()" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-xl transition">🖨️ Print</button>
+                                <button onclick="newQuery()" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-xl transition">🔄 New</button>
+                            </div>
                         </div>
                     `;
                 } else {
                     resultDiv.innerHTML = `
-                        <div class="error-message">
+                        <div class="bg-red-50 border-2 border-red-500 text-red-700 p-6 rounded-xl">
                             <strong>❌ Error:</strong> ${result.error}
                         </div>
                     `;
                 }
             } catch (error) {
                 resultDiv.innerHTML = `
-                    <div class="error-message">
+                    <div class="bg-red-50 border-2 border-red-500 text-red-700 p-6 rounded-xl">
                         <strong>❌ Connection Error:</strong> ${error.message}
                     </div>
                 `;
             } finally {
-                // Re-enable button
                 submitBtn.disabled = false;
                 btnText.innerHTML = '🌾 Get Agriculture Advice';
             }
         });
         
         function formatAdvice(advice) {
-            // Convert plain text to formatted HTML
             let formatted = advice
-                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n\n/g, '</p><p class="mt-4">')
                 .replace(/\n/g, '<br>')
-                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong class="text-primary">$1</strong>')
                 .replace(/\*(.+?)\*/g, '<em>$1</em>');
-            
-            // Wrap in paragraph if not already
-            if (!formatted.startsWith('<')) {
-                formatted = '<p>' + formatted + '</p>';
-            }
-            
+            if (!formatted.startsWith('<')) formatted = '<p>' + formatted + '</p>';
             return formatted;
         }
         
         function copyToClipboard() {
-            const content = document.querySelector('.result-content').innerText;
-            navigator.clipboard.writeText(content).then(() => {
-                alert('✅ Advice copied to clipboard!');
-            });
+            const content = document.querySelector('#result .text-gray-700').innerText;
+            navigator.clipboard.writeText(content).then(() => alert('✅ Advice copied to clipboard!'));
         }
         
         function printAdvice() {
