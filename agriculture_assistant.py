@@ -1,344 +1,246 @@
 """
-Core agriculture assistant with AI-powered responses
+Philippine Agriculture AI Assistant
 """
 
-from data_models import FarmingContext, AgricultureAdvice, PhilippinesAgriData
-from prompt_templates import PromptTemplates
-import json
 import os
 
 class AgricultureAssistant:
-    """AI-powered agriculture assistant using advanced prompts"""
+    """AI-powered agriculture assistant for Philippine farming"""
     
     def __init__(self):
-        self.agri_data = PhilippinesAgriData()
-        self.templates = PromptTemplates()
         self.use_ai = os.getenv('USE_AI_MODEL', 'false').lower() == 'true'
     
-    def get_advice(self, context: FarmingContext) -> str:
-        """Generate AI-powered agriculture advice based on farming context"""
-        
-        # Build comprehensive AI prompt
-        ai_prompt = self._build_ai_prompt(context)
-        
-        # If AI model is available, use it (placeholder for future integration)
+    def get_chat_response(self, prompt: str) -> str:
+        """Get AI response for farming questions"""
         if self.use_ai:
-            return self._get_ai_response(ai_prompt, context)
-        
-        # Otherwise use enhanced rule-based system with ML-like logic
-        return self._get_intelligent_advice(context)
-    
-    def _build_ai_prompt(self, context: FarmingContext) -> str:
-        """Build comprehensive AI prompt with context"""
-        prompt = f"""You are an expert agricultural advisor specializing in Philippine farming.
-
-FARMER'S CONTEXT:
-- Crop: {context.crop}
-- Location: {context.location}
-- Climate Season: {context.climate}
-- Soil Type: {context.soil_type}
-- Main Concern: {context.main_concern}
-
-PROVIDE EXPERT ADVICE:
-Analyze the farmer's specific situation and provide detailed, actionable advice that:
-1. Addresses their main concern directly
-2. Considers local Philippine agricultural practices
-3. Accounts for the specific climate and soil conditions
-4. Includes practical, step-by-step recommendations
-5. Mentions relevant Filipino farming techniques and resources
-6. Provides both traditional and modern solutions
-7. Includes timing and seasonal considerations
-8. Suggests local resources (DA, ATI, cooperatives)
-
-Format your response with clear sections and bullet points for easy reading.
-"""
-        return prompt
-    
-    def _get_ai_response(self, prompt: str, context: FarmingContext) -> str:
-        """Get response from AI model (placeholder for OpenAI, Anthropic, etc.)"""
-        # This is where you would integrate with OpenAI, Anthropic Claude, or local LLM
-        # For now, fall back to intelligent rule-based system
-        return self._get_intelligent_advice(context)
-    
-    def _get_intelligent_advice(self, context: FarmingContext) -> str:
-        """Enhanced intelligent advice using ML-like decision logic"""
-        crop = context.crop.lower()
-        concern = context.main_concern.lower()
-        
-        # Route to specific advice based on concern
-        if "water" in concern:
-            return self._get_water_management_advice(context)
-        elif "pest" in concern or "disease" in concern:
-            return self._get_pest_disease_advice(context)
-        elif "soil" in concern:
-            return self._get_soil_health_advice(context)
-        elif "yield" in concern:
-            return self._get_yield_improvement_advice(context)
-        elif "weather" in concern:
-            return self._get_weather_advice(context)
+            return self._get_ai_response(prompt)
         else:
-            return self._get_general_advice(context)
+            return self._get_fallback_response(prompt)
     
-    def _get_water_management_advice(self, context: FarmingContext) -> str:
-        """AI-enhanced water management advice"""
-        crop = context.crop.lower()
-        climate = context.climate.lower()
-        soil = context.soil_type.lower()
+    def _get_ai_response(self, prompt: str) -> str:
+        """Get response from OpenAI API"""
+        try:
+            from openai import OpenAI
+            client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+            
+            system_prompt = """You are an expert agricultural advisor specializing in Philippine farming. You can answer ANY agriculture-related question comprehensively.
+
+You can help with:
+- Crop Production and Plant Cultivation
+- Livestock and Animal Husbandry
+- Poultry and Aquaculture Farming
+- Crop Disease Detection and Diagnosis
+- Animal Health and Veterinary Care
+- Weather Forecasting and Yield Prediction
+- Soil Quality Analysis and Testing
+- Smart Irrigation Systems and Water Management
+- Pest Detection and Identification
+- Plant Breeding and Genetics
+- Animal Breeding and Reproduction
+- Precision Agriculture and IoT Sensors
+- Drone Technology for Farming
+- Agricultural Data Analytics
+- Climate-Smart Agriculture
+- Automated Farming Systems
+- Plant Health Monitoring
+- Nutrient Management Systems
+- Feed Formulation and Animal Nutrition
+- Agricultural AI and Machine Learning
+- Remote Sensing for Agriculture
+- Farm Management Software
+- Crop Monitoring Technologies
+- Agricultural Robotics
+- Sustainable Farming Practices
+- Digital Agriculture Solutions
+- Agricultural Innovation and Research
+
+RESPONSE STYLE:
+- Provide comprehensive, detailed answers
+- Use Filipino farming terminology when appropriate
+- Include practical, actionable advice
+- Mention Philippine-specific information when relevant
+- Use clear formatting with bullet points and sections
+- Be engaging and educational
+
+Answer any agriculture-related question thoroughly and professionally."""
+
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=1000
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            print(f"AI unavailable: {e}")
+            return self._get_fallback_response(prompt)
+    
+    def _get_fallback_response(self, prompt: str) -> str:
+        """Enhanced fallback response with smart agriculture knowledge"""
+        prompt_lower = prompt.lower()
         
-        advice = f"💧 AI-POWERED WATER MANAGEMENT ANALYSIS\n"
-        advice += f"📍 {context.location} | 🌾 {context.crop} | 🌤️ {context.climate} | 🌍 {context.soil_type}\n"
-        advice += "="*70 + "\n\n"
+        # Animals/Livestock
+        if any(word in prompt_lower for word in ['animal', 'livestock', 'cattle', 'pig', 'chicken', 'goat', 'carabao']):
+            return ("🐄 **LIVESTOCK & ANIMAL FARMING**\n\n"
+                   "**Common Philippine Livestock:**\n"
+                   "- **Cattle**: Dairy and beef production\n"
+                   "- **Pigs**: Backyard and commercial swine\n"
+                   "- **Chickens**: Layers and broilers\n"
+                   "- **Goats**: Meat and milk production\n"
+                   "- **Carabao**: Draft animals and dairy\n\n"
+                   "**Animal Health Management:**\n"
+                   "- Regular vaccination schedules\n"
+                   "- Proper nutrition and feeding\n"
+                   "- Clean housing and sanitation\n"
+                   "- Disease prevention and monitoring\n"
+                   "- Veterinary care and check-ups\n\n"
+                   "**Breeding Programs:**\n"
+                   "- Select quality breeding stock\n"
+                   "- Maintain breeding records\n"
+                   "- Artificial insemination services\n"
+                   "- Genetic improvement programs\n\n"
+                   "**Feed and Nutrition:**\n"
+                   "- Balanced commercial feeds\n"
+                   "- Local feed ingredients (rice bran, copra meal)\n"
+                   "- Forage crops and pasture management\n"
+                   "- Mineral and vitamin supplements\n\n"
+                   "Contact your local veterinarian or livestock technician for specific advice.")
         
-        if "rice" in crop:
-            if "wet" in climate:
-                advice += "🌧️ WET SEASON RICE MANAGEMENT:\n"
-                advice += "• Monitor field water levels (5-10cm depth)\n"
-                advice += "• Install proper drainage to prevent flooding\n"
-                advice += "• Use alternate wetting and drying (AWD) technique\n"
-                advice += "• Check for water stagnation daily\n"
-            else:
-                advice += "☀️ DRY SEASON RICE MANAGEMENT:\n"
-                advice += "• Ensure consistent irrigation supply\n"
-                advice += "• Use drip or sprinkler irrigation\n"
-                advice += "• Apply water every 2-3 days\n"
-                advice += "• Mulch to retain soil moisture\n"
+        # Plants/Crops
+        elif any(word in prompt_lower for word in ['plant', 'crop', 'vegetable', 'fruit', 'tree', 'flower']):
+            return ("🌱 **PLANT & CROP CULTIVATION**\n\n"
+                   "**Popular Philippine Crops:**\n"
+                   "- **Vegetables**: Tomato, eggplant, okra, kangkong\n"
+                   "- **Fruits**: Mango, banana, papaya, citrus\n"
+                   "- **Root Crops**: Sweet potato, cassava, taro\n"
+                   "- **Spices**: Ginger, turmeric, chili, onion\n"
+                   "- **Ornamentals**: Orchids, roses, bougainvillea\n\n"
+                   "**Plant Care Essentials:**\n"
+                   "- **Soil Preparation**: Proper tillage and organic matter\n"
+                   "- **Seed Selection**: Use certified, disease-free seeds\n"
+                   "- **Watering**: Consistent moisture without waterlogging\n"
+                   "- **Fertilization**: Balanced NPK and micronutrients\n"
+                   "- **Pest Control**: Regular monitoring and IPM\n\n"
+                   "**Growth Stages:**\n"
+                   "- **Germination**: Proper temperature and moisture\n"
+                   "- **Vegetative**: Nitrogen-rich fertilizers\n"
+                   "- **Flowering**: Phosphorus and potassium boost\n"
+                   "- **Fruiting**: Adequate water and nutrients\n"
+                   "- **Harvest**: Proper timing for quality\n\n"
+                   "**Plant Health Indicators:**\n"
+                   "- Green, vigorous foliage\n"
+                   "- Strong root development\n"
+                   "- Normal growth patterns\n"
+                   "- Absence of disease symptoms\n\n"
+                   "Choose varieties suited to your local climate and soil conditions.")
         
-        elif "corn" in crop:
-            advice += "🌽 CORN WATER MANAGEMENT:\n"
-            advice += "• Water deeply but less frequently\n"
-            advice += "• Critical periods: tasseling and grain filling\n"
-            advice += "• Avoid waterlogging in clay soils\n"
-            advice += "• Use furrow irrigation for better efficiency\n"
+        # Disease detection
+        elif any(word in prompt_lower for word in ['disease', 'detect', 'symptom', 'diagnosis']):
+            return ("🔬 **CROP DISEASE DETECTION**\n\n"
+                   "**Common Philippine Crop Diseases:**\n"
+                   "- **Rice**: Blast, Bacterial Leaf Blight, Tungro\n"
+                   "- **Corn**: Downy Mildew, Rust, Ear Rot\n"
+                   "- **Vegetables**: Bacterial Wilt, Mosaic Virus\n\n"
+                   "**Detection Methods:**\n"
+                   "- Visual inspection of leaves, stems, roots\n"
+                   "- Use plant disease identification apps\n"
+                   "- Laboratory testing for confirmation\n"
+                   "- Monitor weather conditions (humidity, temperature)\n\n"
+                   "**Early Detection Tips:**\n"
+                   "- Check plants weekly for unusual spots or discoloration\n"
+                   "- Look for wilting, stunted growth, or abnormal leaf patterns\n"
+                   "- Document symptoms with photos for expert consultation\n\n"
+                   "Contact your local DA plant pathologist for accurate diagnosis.")
         
-        elif "banana" in crop:
-            advice += "🍌 BANANA WATER MANAGEMENT:\n"
-            advice += "• Maintain consistent soil moisture\n"
-            advice += "• Install drainage in monsoon season\n"
-            advice += "• Water 2-3 times per week in dry season\n"
-            advice += "• Use mulching to conserve moisture\n"
+        # Smart irrigation
+        elif any(word in prompt_lower for word in ['irrigation', 'water', 'smart', 'automated']):
+            return ("💧 **SMART IRRIGATION SYSTEMS**\n\n"
+                   "**Smart Irrigation Technologies:**\n"
+                   "- **Drip Irrigation**: Water-efficient, precise application\n"
+                   "- **Sprinkler Systems**: Good for larger areas\n"
+                   "- **Soil Moisture Sensors**: Monitor water needs\n"
+                   "- **Weather-based Controllers**: Adjust based on conditions\n\n"
+                   "**Benefits:**\n"
+                   "- 30-50% water savings compared to traditional methods\n"
+                   "- Reduced labor costs and time\n"
+                   "- Better crop yields and quality\n"
+                   "- Precise nutrient delivery through fertigation\n\n"
+                   "**Implementation Tips:**\n"
+                   "- Start with soil moisture monitoring\n"
+                   "- Choose system based on crop type and field size\n"
+                   "- Consider solar-powered options for remote areas\n"
+                   "- Train on proper maintenance and operation\n\n"
+                   "Consult with irrigation specialists for system design and installation.")
         
-        # Add ML-like personalized recommendations
-        advice += "\n🤖 AI-GENERATED PERSONALIZED INSIGHTS:\n"
+        # Weather and yield prediction
+        elif any(word in prompt_lower for word in ['weather', 'yield', 'prediction', 'forecast']):
+            return ("🌦️ **WEATHER & YIELD PREDICTION**\n\n"
+                   "**Key Weather Factors:**\n"
+                   "- **Rainfall**: Critical for crop growth timing\n"
+                   "- **Temperature**: Affects flowering and fruiting\n"
+                   "- **Humidity**: Influences disease pressure\n"
+                   "- **Wind**: Impacts pollination and pest movement\n\n"
+                   "**Yield Prediction Methods:**\n"
+                   "- Monitor crop growth stages and development\n"
+                   "- Track weather patterns during critical periods\n"
+                   "- Use historical yield data for comparison\n"
+                   "- Assess plant health and stress indicators\n\n"
+                   "**Philippine Weather Resources:**\n"
+                   "- PAGASA weather forecasts and warnings\n"
+                   "- Local weather monitoring stations\n"
+                   "- Agricultural weather apps and services\n"
+                   "- Farmer weather networks and cooperatives\n\n"
+                   "Plan your farming activities based on seasonal weather patterns.")
         
-        # Soil-specific water retention analysis
-        if "sandy" in soil:
-            advice += "• Your sandy soil requires 30-40% more frequent watering\n"
-            advice += "• Water retention: LOW - Consider drip irrigation\n"
-        elif "clay" in soil:
-            advice += "• Your clay soil retains water well but drains slowly\n"
-            advice += "• Risk of waterlogging: HIGH - Ensure proper drainage\n"
+        # Precision agriculture
+        elif any(word in prompt_lower for word in ['precision', 'iot', 'sensor', 'gps', 'technology']):
+            return ("📡 **PRECISION AGRICULTURE & IoT**\n\n"
+                   "**IoT Sensors for Farming:**\n"
+                   "- **Soil Sensors**: Monitor moisture, temperature, pH\n"
+                   "- **Weather Stations**: Track local climate conditions\n"
+                   "- **Crop Monitoring**: Growth stages and health status\n"
+                   "- **Livestock Tracking**: Animal health and location\n\n"
+                   "**GPS Technology Applications:**\n"
+                   "- **Field Mapping**: Accurate land measurement\n"
+                   "- **Variable Rate Application**: Precise fertilizer/pesticide use\n"
+                   "- **Yield Mapping**: Track productivity across fields\n"
+                   "- **Equipment Guidance**: Automated tractor steering\n\n"
+                   "**Data Analytics Benefits:**\n"
+                   "- Optimize input usage and reduce costs\n"
+                   "- Improve crop yields and quality\n"
+                   "- Make data-driven farming decisions\n"
+                   "- Monitor farm operations remotely\n\n"
+                   "Start small and gradually expand your precision agriculture toolkit.")
+        
+        # Basic crops
+        elif any(word in prompt_lower for word in ['rice', 'palay']):
+            return ("🌾 **RICE FARMING ADVICE**\n\n"
+                   "For rice farming in the Philippines:\n"
+                   "- **Varieties**: Use certified seeds like PSB Rc82, NSIC Rc222\n"
+                   "- **Planting**: Best during wet season (June-October)\n"
+                   "- **Water**: Maintain 2-5cm water depth, use AWD method\n"
+                   "- **Fertilizer**: Apply 14-14-14 at planting, urea at tillering\n"
+                   "- **Pests**: Watch for stem borer, brown planthopper\n\n"
+                   "Contact your local DA office for specific variety recommendations.")
+        
+        elif any(word in prompt_lower for word in ['corn', 'mais']):
+            return ("🌽 **CORN FARMING ADVICE**\n\n"
+                   "For corn farming in the Philippines:\n"
+                   "- **Varieties**: Use hybrid varieties suited for your region\n"
+                   "- **Planting**: Plant at start of rainy season or with irrigation\n"
+                   "- **Spacing**: 75cm between rows, 25cm between plants\n"
+                   "- **Fertilizer**: Apply complete fertilizer at planting\n"
+                   "- **Pests**: Monitor for fall armyworm, corn borer\n\n"
+                   "Visit your nearest ATI center for training programs.")
+        
         else:
-            advice += "• Your loamy soil has optimal water retention\n"
-            advice += "• Balanced irrigation schedule recommended\n"
-        
-        # Climate-based predictions
-        advice += f"\n📊 CLIMATE ANALYSIS for {context.location}:\n"
-        advice += "• Expected rainfall pattern: Monitor PAGASA forecasts\n"
-        advice += "• Irrigation efficiency: Adjust based on evapotranspiration\n"
-        advice += "• Water stress indicators: Check leaf wilting daily\n"
-        
-        advice += "\n⚠️ SMART FARMING REMINDERS:\n"
-        advice += "• Use soil moisture sensors for precision\n"
-        advice += "• Check weather forecasts (PAGASA) regularly\n"
-        advice += "• Adjust irrigation based on real-time rainfall\n"
-        advice += "• Monitor crop water stress indicators\n"
-        
-        return advice
-    
-    def _get_pest_disease_advice(self, context: FarmingContext) -> str:
-        """AI-enhanced pest and disease management"""
-        crop = context.crop.lower()
-        climate = context.climate.lower()
-        
-        advice = f"🐛 AI PEST & DISEASE PREDICTION SYSTEM\n"
-        advice += f"📍 {context.location} | 🌾 {context.crop} | 🌤️ {context.climate}\n"
-        advice += "="*70 + "\n\n"
-        
-        if "rice" in crop:
-            advice += "🌾 COMMON RICE PESTS & DISEASES:\n"
-            advice += "• Brown Planthopper: Use resistant varieties, avoid over-fertilizing\n"
-            advice += "• Stem Borer: Apply neem oil, use pheromone traps\n"
-            advice += "• Rice Blast: Improve air circulation, avoid excess nitrogen\n"
-            advice += "• Bacterial Leaf Blight: Use certified seeds, crop rotation\n"
-        
-        elif "corn" in crop:
-            advice += "🌽 COMMON CORN PESTS & DISEASES:\n"
-            advice += "• Fall Armyworm: Early morning inspection, biological control\n"
-            advice += "• Corn Borer: Remove crop residues, use Bt corn varieties\n"
-            advice += "• Downy Mildew: Improve drainage, use resistant varieties\n"
-            advice += "• Corn Rust: Apply fungicides preventively\n"
-        
-        elif "banana" in crop:
-            advice += "🍌 COMMON BANANA PESTS & DISEASES:\n"
-            advice += "• Bunchy Top Virus: Remove infected plants, control aphids\n"
-            advice += "• Panama Disease: Use resistant varieties, soil sterilization\n"
-            advice += "• Banana Weevil: Use pheromone traps, remove plant debris\n"
-            advice += "• Black Sigatoka: Improve air circulation, fungicide application\n"
-        
-        # AI-based risk assessment
-        advice += "\n🤖 AI RISK ASSESSMENT:\n"
-        if "wet" in climate or "monsoon" in climate:
-            advice += "⚠️ HIGH RISK: Fungal diseases likely due to wet conditions\n"
-            advice += "• Disease pressure: 75-90% probability\n"
-            advice += "• Recommended action: Preventive fungicide application\n"
-        else:
-            advice += "✅ MODERATE RISK: Insect pests more common in dry season\n"
-            advice += "• Pest pressure: 50-65% probability\n"
-            advice += "• Recommended action: Regular scouting and monitoring\n"
-        
-        advice += "\n🛡️ SMART IPM STRATEGY:\n"
-        advice += "• AI-recommended monitoring: 2-3 times per week\n"
-        advice += "• Use biological control agents (Trichogramma, Bt)\n"
-        advice += "• Rotate pesticides to prevent resistance\n"
-        advice += "• Maintain field sanitation (remove infected plants)\n"
-        advice += "• Plant trap crops around main crop\n"
-        advice += "• Use pheromone traps for early detection\n"
-        
-        advice += "\n📱 DIGITAL TOOLS:\n"
-        advice += "• Use pest identification apps (PlantVillage, iNaturalist)\n"
-        advice += "• Join farmer WhatsApp groups for local alerts\n"
-        advice += "• Contact DA-ATI for expert consultation\n"
-        
-        return advice
-    
-    def _get_soil_health_advice(self, context: FarmingContext) -> str:
-        """Soil health management advice"""
-        soil_type = context.soil_type.lower()
-        
-        advice = f"🌱 SOIL HEALTH MANAGEMENT\n"
-        advice += f"Soil Type: {context.soil_type} | Crop: {context.crop}\n\n"
-        
-        if "sandy" in soil_type:
-            advice += "🏖️ SANDY SOIL MANAGEMENT:\n"
-            advice += "• Add organic matter (compost, manure)\n"
-            advice += "• Use cover crops to prevent erosion\n"
-            advice += "• Apply fertilizers in small, frequent doses\n"
-            advice += "• Improve water retention with mulching\n"
-        
-        elif "clay" in soil_type:
-            advice += "🧱 CLAY SOIL MANAGEMENT:\n"
-            advice += "• Improve drainage with raised beds\n"
-            advice += "• Add organic matter to improve structure\n"
-            advice += "• Avoid working soil when wet\n"
-            advice += "• Use gypsum to improve soil structure\n"
-        
-        elif "loamy" in soil_type:
-            advice += "🌿 LOAMY SOIL MANAGEMENT:\n"
-            advice += "• Maintain organic matter levels\n"
-            advice += "• Practice crop rotation\n"
-            advice += "• Regular soil testing (every 2-3 years)\n"
-            advice += "• Balanced fertilization program\n"
-        
-        advice += "\n📊 SOIL TESTING RECOMMENDATIONS:\n"
-        advice += "• Test pH levels (ideal: 6.0-7.0 for most crops)\n"
-        advice += "• Check NPK levels\n"
-        advice += "• Monitor organic matter content\n"
-        advice += "• Test for micronutrients if needed\n"
-        
-        advice += "\n🌾 SOIL IMPROVEMENT PRACTICES:\n"
-        advice += "• Apply compost or well-rotted manure\n"
-        advice += "• Practice green manuring\n"
-        advice += "• Use appropriate crop rotation\n"
-        advice += "• Minimize soil compaction\n"
-        
-        return advice
-    
-    def _get_yield_improvement_advice(self, context: FarmingContext) -> str:
-        """Yield improvement strategies"""
-        crop = context.crop.lower()
-        
-        advice = f"📈 YIELD IMPROVEMENT for {context.crop.upper()}\n"
-        advice += f"Location: {context.location} | Soil: {context.soil_type}\n\n"
-        
-        advice += "🎯 KEY STRATEGIES:\n"
-        advice += "• Use high-quality, certified seeds\n"
-        advice += "• Optimize planting density\n"
-        advice += "• Implement proper fertilization program\n"
-        advice += "• Ensure adequate water management\n"
-        advice += "• Control pests and diseases effectively\n"
-        advice += "• Practice proper crop spacing\n"
-        
-        if "rice" in crop:
-            advice += "\n🌾 RICE-SPECIFIC TIPS:\n"
-            advice += "• Use System of Rice Intensification (SRI) method\n"
-            advice += "• Transplant young seedlings (14-21 days)\n"
-            advice += "• Maintain proper plant spacing (25x25 cm)\n"
-            advice += "• Apply balanced NPK fertilization\n"
-        
-        elif "corn" in crop:
-            advice += "\n🌽 CORN-SPECIFIC TIPS:\n"
-            advice += "• Plant at optimal density (60,000-75,000 plants/ha)\n"
-            advice += "• Side-dress with nitrogen at V6 stage\n"
-            advice += "• Ensure adequate phosphorus at planting\n"
-            advice += "• Control weeds early in season\n"
-        
-        advice += "\n⏰ TIMING IS CRUCIAL:\n"
-        advice += "• Plant at optimal time for your region\n"
-        advice += "• Monitor growth stages closely\n"
-        advice += "• Apply inputs at right growth stages\n"
-        advice += "• Harvest at proper maturity\n"
-        
-        return advice
-    
-    def _get_weather_advice(self, context: FarmingContext) -> str:
-        """Weather-related farming advice"""
-        climate = context.climate.lower()
-        
-        advice = f"🌤️ WEATHER PLANNING for {context.crop.upper()}\n"
-        advice += f"Current Climate: {context.climate} | Location: {context.location}\n\n"
-        
-        if "wet" in climate or "monsoon" in climate:
-            advice += "🌧️ WET SEASON PREPARATIONS:\n"
-            advice += "• Ensure proper field drainage\n"
-            advice += "• Prepare for potential flooding\n"
-            advice += "• Increase disease monitoring\n"
-            advice += "• Adjust fertilizer application timing\n"
-            advice += "• Harvest before heavy rains if possible\n"
-        
-        elif "dry" in climate:
-            advice += "☀️ DRY SEASON PREPARATIONS:\n"
-            advice += "• Secure irrigation water sources\n"
-            advice += "• Plan water-efficient crops\n"
-            advice += "• Use drought-resistant varieties\n"
-            advice += "• Apply mulching to conserve moisture\n"
-            advice += "• Monitor for heat stress in crops\n"
-        
-        advice += "\n📱 WEATHER MONITORING TOOLS:\n"
-        advice += "• PAGASA weather forecasts\n"
-        advice += "• Local weather apps\n"
-        advice += "• Agricultural weather stations\n"
-        advice += "• Community weather updates\n"
-        
-        advice += "\n🚨 EXTREME WEATHER PREPAREDNESS:\n"
-        advice += "• Typhoon: Harvest early, secure equipment\n"
-        advice += "• Drought: Water conservation, crop insurance\n"
-        advice += "• Flooding: Drainage systems, elevated storage\n"
-        advice += "• El Niño/La Niña: Adjust cropping calendar\n"
-        
-        return advice
-    
-    def _get_general_advice(self, context: FarmingContext) -> str:
-        """General farming advice"""
-        advice = f"🌾 GENERAL FARMING ADVICE for {context.crop.upper()}\n"
-        advice += f"Location: {context.location} | Climate: {context.climate} | Soil: {context.soil_type}\n\n"
-        
-        advice += "📋 FARMING BEST PRACTICES:\n"
-        advice += "• Plan your cropping calendar\n"
-        advice += "• Keep detailed farm records\n"
-        advice += "• Regular field monitoring\n"
-        advice += "• Maintain equipment properly\n"
-        advice += "• Stay updated with new technologies\n"
-        
-        advice += "\n💰 ECONOMIC CONSIDERATIONS:\n"
-        advice += "• Monitor market prices regularly\n"
-        advice += "• Consider crop insurance\n"
-        advice += "• Plan for input costs\n"
-        advice += "• Explore value-adding opportunities\n"
-        
-        advice += "\n🤝 RESOURCES & SUPPORT:\n"
-        advice += "• Contact local agricultural extension office\n"
-        advice += "• Join farmer cooperatives\n"
-        advice += "• Attend agricultural training programs\n"
-        advice += "• Connect with fellow farmers\n"
-        
-        return advice
+            return ("I can help you with agriculture questions! Ask me about:\n\n"
+                   "🌾 **Crops**: Rice, corn, vegetables, fruits\n"
+                   "🐄 **Animals**: Livestock, poultry, animal health\n"
+                   "🌱 **Plants**: Cultivation, care, growth stages\n"
+                   "🔬 **Technology**: Disease detection, smart farming\n"
+                   "💧 **Systems**: Irrigation, soil analysis, precision agriculture\n\n"
+                   "What would you like to know about farming?")

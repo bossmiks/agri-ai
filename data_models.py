@@ -1,62 +1,60 @@
 """
-Data models for agriculture context and responses
+Data models for Philippine agriculture context
 """
 
 from dataclasses import dataclass
 from typing import List, Dict
 
 @dataclass
-class FarmingContext:
-    """Represents the farming context provided by user"""
-    crop: str
-    location: str
-    climate: str
-    soil_type: str
-    main_concern: str
-
-@dataclass
-class AgricultureAdvice:
-    """Represents advice response from the AI system"""
-    title: str
-    recommendations: List[str]
-    additional_tips: List[str] = None
-    warnings: List[str] = None
+class PhilippineCrop:
+    """Philippine crop information"""
+    name: str
+    local_name: str
+    regions: List[str]
+    seasons: List[str]
+    varieties: List[str]
 
 class PhilippinesAgriData:
-    """Static data about Philippine agriculture"""
+    """Philippine agriculture data and knowledge base"""
     
-    COMMON_CROPS = {
-        "rice": {
-            "seasons": ["wet", "dry"],
-            "regions": ["central_luzon", "cagayan_valley", "ilocos"],
-            "soil_preference": ["clay", "loamy"]
-        },
-        "corn": {
-            "seasons": ["dry", "wet"],
-            "regions": ["mindanao", "northern_luzon"],
-            "soil_preference": ["sandy_loam", "loamy"]
-        },
-        "banana": {
-            "seasons": ["year_round"],
-            "regions": ["mindanao", "southern_luzon"],
-            "soil_preference": ["sandy_loam", "loamy"]
-        },
-        "coconut": {
-            "seasons": ["year_round"],
-            "regions": ["bicol", "eastern_visayas", "mindanao"],
-            "soil_preference": ["sandy", "sandy_loam"]
-        }
+    MAJOR_CROPS = {
+        "rice": PhilippineCrop(
+            name="Rice",
+            local_name="Palay",
+            regions=["Central Luzon", "Cagayan Valley", "Ilocos", "Bicol"],
+            seasons=["Wet season", "Dry season"],
+            varieties=["PSB Rc82", "NSIC Rc222", "NSIC Rc216", "PSB Rc18"]
+        ),
+        "corn": PhilippineCrop(
+            name="Corn", 
+            local_name="Mais",
+            regions=["Northern Mindanao", "SOCCSKSARGEN", "Cagayan Valley"],
+            seasons=["Wet season", "Dry season"],
+            varieties=["Pioneer", "Dekalb", "NK", "Local varieties"]
+        ),
+        "banana": PhilippineCrop(
+            name="Banana",
+            local_name="Saging", 
+            regions=["Davao", "Northern Mindanao", "SOCCSKSARGEN"],
+            seasons=["Year-round"],
+            varieties=["Cavendish", "Lakatan", "Latundan", "Saba"]
+        )
     }
     
-    PEST_DISEASES = {
-        "rice": ["brown_planthopper", "stem_borer", "blast_disease"],
-        "corn": ["corn_borer", "fall_armyworm", "downy_mildew"],
-        "banana": ["bunchy_top_virus", "panama_disease", "banana_weevil"],
-        "coconut": ["rhinoceros_beetle", "red_palm_weevil", "bud_rot"]
+    REGIONS = {
+        "luzon": ["Central Luzon", "Cagayan Valley", "Ilocos", "CALABARZON", "Bicol"],
+        "visayas": ["Western Visayas", "Central Visayas", "Eastern Visayas"],
+        "mindanao": ["Northern Mindanao", "Davao", "SOCCSKSARGEN", "CARAGA", "ARMM"]
     }
     
-    CLIMATE_PATTERNS = {
-        "wet_season": {"months": ["June", "July", "August", "September", "October"]},
-        "dry_season": {"months": ["November", "December", "January", "February", "March", "April", "May"]},
-        "monsoon": {"months": ["June", "July", "August", "September"]}
+    COMMON_PESTS = {
+        "rice": ["Brown Planthopper", "Stem Borer", "Rice Bug", "Golden Apple Snail"],
+        "corn": ["Fall Armyworm", "Corn Borer", "Cutworm", "Corn Earworm"],
+        "banana": ["Banana Weevil", "Nematodes", "Thrips", "Aphids"]
+    }
+    
+    DISEASES = {
+        "rice": ["Rice Blast", "Bacterial Leaf Blight", "Sheath Blight", "Tungro"],
+        "corn": ["Downy Mildew", "Corn Rust", "Ear Rot", "Stalk Rot"],
+        "banana": ["Panama Disease", "Black Sigatoka", "Bunchy Top", "Bacterial Wilt"]
     }
